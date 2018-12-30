@@ -333,7 +333,7 @@ class PrimeMenu extends Component {
             'layout-menu-static-active': this.state.staticMenuMobileActive
         });
         const menuClassName = classNames('layout-menu', {'layout-menu-dark': this.state.darkMenu});
-        //const AppBreadCrumbWithRouter = withRouter(AppBreadcrumb);
+        const AppBreadCrumbWithRouter = withRouter(AppBreadcrumb);
         
         return (
             <div className="layout-wrapper" onClick={this.onDocumentClick}>
