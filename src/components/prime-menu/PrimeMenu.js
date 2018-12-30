@@ -355,7 +355,7 @@ class PrimeMenu extends Component {
 
                     <div className="layout-main">
 
-                        {/* <AppBreadCrumbWithRouter />      */}
+                        <AppBreadCrumbWithRouter />
 
                         <div className="layout-content">
 
@@ -369,10 +369,10 @@ class PrimeMenu extends Component {
                             <Route path="/messages" component={MessagesDemo} />
                             <Route path="/charts" component={ChartsDemo} />
                             <Route path="/misc" component={MiscDemo} />
-                            <Route path="/empty" component={EmptyPage} />
+
                             <Route path="/utils" component={UtilsDemo} />
                             <Route path="/documentation" component={Documentation} /> */}
-
+                            <Route path="/empty" component={EmptyPage} />
 
                         </div>
                     </div>
