@@ -1,9 +1,8 @@
 import * as React from 'react';
-
 import * as toastr from 'toastr';
 import { ApiService } from '../services/ApiService';
 import { AuthService } from '../services/AuthService';
-
+//  import axios from 'axios';
 import AuthContent from './AuthContent';
 import Buttons from './Buttons';
 
@@ -64,6 +63,7 @@ export default class AppContent extends React.Component<any, any> {
   public getUser = () => {
     this.authService.getUser().then(user => {
       if (user) {
+        sessionStorage.setItem('token', `Bearer ${user.access_token}`);
         toastr.success('User has been successfully loaded from store.');
       } else {
         toastr.info('You are not logged in.');

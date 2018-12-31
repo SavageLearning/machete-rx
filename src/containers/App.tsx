@@ -4,9 +4,18 @@ import AppContent from '../components/AppContent';
 import PrimeMenu from '../components/prime-menu/PrimeMenu';
 import './App.css';
 import { AppFooter } from '../components/prime-menu/AppFooter';
+import { IApplicationState } from '../redux/state';
+import { loadEmployer } from '../redux/employer';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { ILocationAwareProps } from '../helpers/props';
 
-class App extends React.Component {
-  public render() {
+interface IAppProps extends ILocationAwareProps {
+  handleLoadEmployer: () => void;
+}
+
+class App extends React.Component<IAppProps> {
+  public render(): JSX.Element {
     return (
       <div className="App">
         <PrimeMenu />
@@ -21,6 +30,23 @@ class App extends React.Component {
       </div>
     );
   }
+
+  public componentDidMount(): void {
+    const { handleLoadEmployer, } = this.props;
+    handleLoadEmployer();
+  }
 }
 
-export default App;
+// Returns the slice of the Redux state that's available to this component
+const mapStateToProps = (state: IApplicationState) => ({
+  employer: state.employer.employer,
+});
+
+// A mapping of Redux actions available to this component
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    handleLoadEmployer: () => dispatch(loadEmployer())
+  };
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

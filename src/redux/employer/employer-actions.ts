@@ -39,12 +39,16 @@ export const loadEmployerFailure = (error: Error) =>
                     action(EmployerActionType.LOAD_FAILURE, { error });
 
 // Actions with Side Effects
-
 export const loadEmployer = () => {
     return (dispatch: Dispatch) => {
         dispatch(loadEmployerBegin());
 
-        axios.create({ baseURL: 'http://localhost:4200'})
+        axios.create({ 
+            baseURL: 'https://test-api.machetessl.org',
+            headers: {
+                Authorization: sessionStorage.getItem('token')
+            }
+        })
             .get<Employer>('/api/employer/profile')
             .then((res: AxiosResponse<Employer>) => {
             dispatch(loadEmployerSuccess(res.data));

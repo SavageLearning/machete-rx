@@ -5,15 +5,17 @@ import { applyMiddleware, createStore, Store } from 'redux';
 import { InitialState, IApplicationState } from './state';
 
 function configureStore(): Store<IApplicationState> {
-    // Incorporate the 'thunk' library, to simplify the dispatching of async actions.
+    // redux-thunk: it is a middleware that looks at every
+    // action that passes through the system, and if it’s a 
+    // function, it calls that function. That’s all it does.
+    // https://daveceddia.com/what-is-a-thunk/
     const middleware = applyMiddleware(thunk);
 
     return createStore(
         rootReducer,
         InitialState,
-        composeWithDevTools(middleware) // Hook up to Redux debugging.
+        composeWithDevTools(middleware)
     );
 }
 
-/** The data store for the application. */
 export let store = configureStore();
