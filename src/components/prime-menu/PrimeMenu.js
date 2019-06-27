@@ -7,7 +7,8 @@ import {AppInlineProfile} from './AppInlineProfile';
 import {AppFooter} from './AppFooter';
 import {AppMenu} from './AppMenu';
 import {AppRightPanel} from './AppRightPanel';
-import {Route} from 'react-router-dom'
+import {Route} from 'react-router-dom';
+import ConfigView from '../config/ConfigView'; 
 // import {Dashboard} from './components/Dashboard';
 // import {FormsDemo} from './components/FormsDemo';
 // import {SampleDemo} from './components/SampleDemo';
@@ -215,8 +216,8 @@ class PrimeMenu extends Component {
 
     createMenu() {
         this.menu = [
-            {label: 'Dashboard', icon: 'dashboard', command:()=>{ window.location = "#/"}},
-            {label: 'Sample Page', icon: 'desktop_mac', command:()=>{ window.location = "#/empty"}},
+            {label: 'Dashboard', icon: 'dashboard', command:()=>{ window.location = "/"}},
+            {label: 'Config', icon: 'settings', command:()=>{ window.location = "/config"}},
         ];
     }
 
@@ -270,7 +271,7 @@ class PrimeMenu extends Component {
 
                             <Route path="/utils" component={UtilsDemo} />
                             <Route path="/documentation" component={Documentation} /> */}
-                            <Route path="/empty" component={EmptyPage} />
+                            <Route path="/config" component={ConfigView} />
 
                         </div>
                     </div>
