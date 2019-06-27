@@ -1,19 +1,20 @@
 import 'babel-polyfill';
 import * as React from 'react';
-import AppContent from '../components/AppContent';
 import PrimeMenu from '../components/prime-menu/PrimeMenu';
 import './App.css';
 import { AppFooter } from '../components/prime-menu/AppFooter';
+import { withRouter } from 'react-router';
+import { ILocationAwareProps } from '../helpers/props';
 
-class App extends React.Component {
-  public render() {
+class App extends React.Component<ILocationAwareProps> {
+  public render(): JSX.Element {
     return (
       <div className="App">
         <PrimeMenu />
         <div className="container-fluid">
           <div className="row">
             <div className="col">
-              <AppContent />
+              Hi!
             </div>
           </div>
         </div>
@@ -23,4 +24,5 @@ class App extends React.Component {
   }
 }
 
-export default App;
+
+export default withRouter(App);
