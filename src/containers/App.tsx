@@ -5,6 +5,7 @@ import './App.css';
 import { AppFooter } from '../components/prime-menu/AppFooter';
 import { withRouter } from 'react-router';
 import { ILocationAwareProps } from '../helpers/props';
+import { EmployersView } from 'src/employers/EmployersView';
 
 class App extends React.Component<ILocationAwareProps> {
   public render(): JSX.Element {
@@ -14,7 +15,7 @@ class App extends React.Component<ILocationAwareProps> {
         <div className="container-fluid">
           <div className="row">
             <div className="col">
-              Hi!
+              <EmployersView />
             </div>
           </div>
         </div>
