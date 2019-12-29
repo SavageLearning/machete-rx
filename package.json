@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "=4.8.0",
+    "@material-ui/icons": "^4.5.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -10,10 +12,23 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "@types/react-router-dom": "^5.1.3",
+    "jss": "10.0.0",
+    "machete-api-redux-query-es6-client": "file:autogen/clients/machete-api-redux-query-es6-client",
+    "material-table": "^1.54.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-redux": "^7.1.3",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
+    "redux-query": "^3.3.0",
+    "redux-query-interface-superagent": "^3.3.0",
+    "redux-query-react": "^3.3.0",
     "typescript": "~3.7.2"
+  },
+  "proxy": "http://localhost:4213",
+  "resolutions": {
+    "jss": "10.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -35,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-redux": "^7.1.5"
   }
 }
