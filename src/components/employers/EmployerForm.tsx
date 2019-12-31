@@ -10,11 +10,12 @@ import { EmployerVM, TypedQueryConfig } from 'machete-api-redux-query-es6-client
 import React, { FunctionComponent, FormEvent, useState, ChangeEvent } from 'react';
 import { useMutation } from 'redux-query-react';
 import { useSelector } from 'react-redux';
-import { errorSelectors } from 'redux-query';
+import { useSnackbar } from 'notistack';
 
 export const EmployerForm: FunctionComponent = () => {
   const [open, setOpen] = useState(false);
-  const [employer, setEmployer] = useState<EmployerVM>({});
+  const [employerVM, setEmployerVM] = useState<EmployerVM>({});
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -26,11 +27,11 @@ export const EmployerForm: FunctionComponent = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    postToEmployer(employer);
+    postToEmployer(employerVM);
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setEmployer({...employer, ...{[e.target.id]: e.target.value} })    
+    setEmployerVM({...employerVM, ...{[e.target.id]: e.target.value} })    
   }
 
   const getEmployer = (state: any, id: number) => {
@@ -39,17 +40,18 @@ export const EmployerForm: FunctionComponent = () => {
 //  apiEmployersPost<T>(requestParameters: ApiEmployersPostRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T>;
 
   const getErrors = (state: any) => {
-    return state;
+    return state.errors.employers;
   }
 
   const mutateEmployer: TypedQueryConfig<{ employers: EmployerVM} , EmployerVM>  = {
+    queryKey: 'employers',
     transform: (body: EmployerVM) => ({ employers: { [body.id || 0]: body } }),
     update: {
       employers: (oldValue: EmployerVM, newValue: EmployerVM): EmployerVM =>  ({ ...oldValue, ...newValue })
     }
   };
 
-  // const [{ responseHeaders }] = useSelector(getErrors) || [];
+  const { responseBody, responseHeaders } = useSelector(getErrors) || [];
 
 
   const [{ isPending }, postToEmployer] = useMutation((newEmployer: EmployerVM) => 
@@ -57,6 +59,10 @@ export const EmployerForm: FunctionComponent = () => {
       employerVM: newEmployer
     }, mutateEmployer));
 
+  if (responseBody) { 
+    console.log(responseBody); 
+    enqueueSnackbar(responseBody.Message, { variant: 'error'});
+  }
   return (
     <div>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -64,8 +70,7 @@ export const EmployerForm: FunctionComponent = () => {
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <form onSubmit={handleSubmit}>
-        <DialogTitle id="form-dialog-title">{JSON.stringify(employer)}</DialogTitle>
-        <DialogTitle id="form-dialog-error">{"WOO" + JSON.stringify([])}</DialogTitle>
+        <DialogTitle id="form-dialog-title">{JSON.stringify(employerVM)}</DialogTitle>
         <DialogContent>
           <TextField id="name" label="Employer name" type="text" onChange={handleChange} />
           <TextField id="address1" label="Address" type="text"  onChange={handleChange} />

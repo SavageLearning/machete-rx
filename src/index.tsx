@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-
+import { SnackbarProvider } from 'notistack';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Provider as ReduxQueryProvider } from 'redux-query-react';
@@ -14,10 +14,19 @@ export const getQueries = (state: any) => state.queries;
 ReactDOM.render(
         <Provider store={store}>
             <ReduxQueryProvider queriesSelector={getQueries}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-        </ReduxQueryProvider>
+                <BrowserRouter>
+                    <SnackbarProvider 
+                        anchorOrigin= {{
+                            vertical: 'top',
+                            horizontal: 'right'
+                        }}
+                        maxSnack={3}
+                        preventDuplicate={true}
+                    >
+                        <App />
+                    </SnackbarProvider>
+                </BrowserRouter>
+            </ReduxQueryProvider>
         </Provider>
 
     , document.getElementById('root') as HTMLElement);
