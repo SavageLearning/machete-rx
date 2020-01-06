@@ -7,7 +7,7 @@ import { SnackbarProvider } from 'notistack';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Provider as ReduxQueryProvider } from 'redux-query-react';
-import store  from './services/ReduxStore';
+import store  from './store/ReduxStore';
 
 export const getQueries = (state: any) => state.queries;
 

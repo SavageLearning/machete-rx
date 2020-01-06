@@ -6,16 +6,32 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import * as client from 'machete-api-redux-query-es6-client';
-import { EmployerVM, TypedQueryConfig } from 'machete-api-redux-query-es6-client';
-import React, { FunctionComponent, FormEvent, useState, ChangeEvent } from 'react';
+import { EmployerVM, EmployerVMFromJSON } from 'machete-api-redux-query-es6-client';
+import React, { FunctionComponent, useState, ChangeEvent } from 'react';
 import { useMutation } from 'redux-query-react';
 import { useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
+import { getEmployersErrors } from '../../store/Selectors';
+import { mutateEmployer } from '../../store/Mutations';
+import { useForm } from 'react-hook-form';
 
 export const EmployerForm: FunctionComponent = () => {
   const [open, setOpen] = useState(false);
-  const [employerVM, setEmployerVM] = useState<EmployerVM>({});
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const [employerVM, setEmployerVM] = useState<EmployerVM>();
+  const { enqueueSnackbar } = useSnackbar();
+  const { responseBody } = useSelector(getEmployersErrors) || [];
+
+  const [{ status }, postToEmployer] = useMutation((newEmployer: EmployerVM) => 
+    client.apiEmployersIdPut<{ employers: EmployerVM}>({
+      id: employerVM?.id || 0,
+      employerVM: newEmployer
+    }, mutateEmployer));
+
+  const { register, handleSubmit, errors } = useForm<EmployerVM>();
+  const onSubmit = (data: EmployerVM) => { 
+    postToEmployer(data);
+   }
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -25,43 +41,23 @@ export const EmployerForm: FunctionComponent = () => {
     setOpen(false);
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    postToEmployer(employerVM);
-  }
+  // const handleSubmit = (e: FormEvent) => {
+  //   e.preventDefault();
+  //   postToEmployer(employerVM);
+  // }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setEmployerVM({...employerVM, ...{[e.target.id]: e.target.value} })    
-  }
-
-  const getEmployer = (state: any, id: number) => {
-    return state.entities.employers[id];
-  }
-//  apiEmployersPost<T>(requestParameters: ApiEmployersPostRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T>;
-
-  const getErrors = (state: any) => {
-    return state.errors.employers;
-  }
-
-  const mutateEmployer: TypedQueryConfig<{ employers: EmployerVM} , EmployerVM>  = {
-    queryKey: 'employers',
-    transform: (body: EmployerVM) => ({ employers: { [body.id || 0]: body } }),
-    update: {
-      employers: (oldValue: EmployerVM, newValue: EmployerVM): EmployerVM =>  ({ ...oldValue, ...newValue })
-    }
-  };
-
-  const { responseBody, responseHeaders } = useSelector(getErrors) || [];
-
-
-  const [{ isPending }, postToEmployer] = useMutation((newEmployer: EmployerVM) => 
-    client.apiEmployersPost<{ employers: EmployerVM}>({
-      employerVM: newEmployer
-    }, mutateEmployer));
+  // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setEmployerVM({...employerVM, ...{[e.target.id]: e.target.value} })    
+  // }
 
   if (responseBody) { 
-    console.log(responseBody); 
-    enqueueSnackbar(responseBody.Message, { variant: 'error'});
+    if (status === 500) {
+      enqueueSnackbar(responseBody.Message, { variant: 'error'});
+    }
+    if (status === 400) {
+      enqueueSnackbar(JSON.stringify(responseBody), { variant: 'warning'});
+    }
+
   }
   return (
     <div>
@@ -69,18 +65,42 @@ export const EmployerForm: FunctionComponent = () => {
         Open form dialog
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <form onSubmit={handleSubmit}>
-        <DialogTitle id="form-dialog-title">{JSON.stringify(employerVM)}</DialogTitle>
+        <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogTitle id="form-dialog-title">{`Title!`}</DialogTitle>
         <DialogContent>
-          <TextField id="name" label="Employer name" type="text" onChange={handleChange} />
-          <TextField id="address1" label="Address" type="text"  onChange={handleChange} />
-          <TextField id="address2" label="Address (2)" type="text"  onChange={handleChange}/>
-          <TextField id="city" label="City" type="text" onChange={handleChange} />
-          <TextField id="state" label="State" type="text"  onChange={handleChange}/>
-          <TextField id="phone" label="Phone" type="phone"  onChange={handleChange}/>
-          <TextField id="cellphone" label="Cellphone" type="phone"  onChange={handleChange}/>
-          <TextField id="zipcode" label="Zip code" type="text"  onChange={handleChange}/>
-          <TextField id="email" label="Email" type="email"  onChange={handleChange}/>
+          <TextField name="name" label="Employer name" type="text" 
+            inputRef={register({ required: true })}
+            helperText={errors.name && "Employer name required"}
+          />
+          <TextField name="address1" label="Address" type="text" 
+            inputRef={register({ required: true })}
+            helperText={errors.address1 && "Address required"}
+          />
+          <TextField name="address2" label="Address (2)" type="text" 
+            inputRef={register({})}
+          />
+          <TextField name="city" label="City" type="text" 
+            inputRef={register({ required: true })}
+            helperText={errors.city && "City required"}
+          />
+          <TextField name="state" label="State" type="text" 
+            inputRef={register({ required: true })}
+            helperText={errors.state && "State required"}
+          />
+          <TextField name="phone" label="Phone" type="phone" 
+            inputRef={register({ required: true })}
+            helperText={errors.phone && "Phone required in ###-###-#### format"}
+          />
+          <TextField name="cellphone" label="Cellphone" type="phone" 
+            inputRef={register({})}
+          />
+          <TextField name="zipcode" label="Zip code" type="text" 
+            inputRef={register({ required: true })}
+            helperText={errors.zipcode && "Zipcode required"}
+          />
+          <TextField name="email" label="Email" type="email" 
+            inputRef={register({})}
+          />
           <Divider />
 
         </DialogContent>
@@ -88,7 +108,7 @@ export const EmployerForm: FunctionComponent = () => {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary" type="submit" value="Submit">
+          <Button color="primary" type="submit" value="Submit">
             Save
           </Button>
         </DialogActions>

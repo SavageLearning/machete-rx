@@ -3,21 +3,9 @@ import React, { FunctionComponent, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRequest } from 'redux-query-react';
 import * as client from 'machete-api-redux-query-es6-client';
-import { TypedQueryConfig, EmployersList } from 'machete-api-redux-query-es6-client';
 import { EmployerForm } from './EmployerForm';
-
-const getEmployersList = (state: any) => { 
-  return state.entities.employersList; 
-}
-
-const employersRequest: TypedQueryConfig<{ employersList: EmployersList[]}, EmployersList[]> = {
-  queryKey: "employersList",
-  transform: (body: any) => ({ employersList: body}),
-  update: {
-    employersList: (oldValue: EmployersList[], newValue: EmployersList[]): EmployersList[] =>  newValue
-  }
-}
-
+import { employersRequest } from '../../store/Requests';
+import { getEmployersList } from '../../store/Selectors';
 
 export const EmployersTable: FunctionComponent = () => {
   const [{ isPending }] = useRequest(client.apiEmployersGet({}, employersRequest));
