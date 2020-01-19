@@ -8,18 +8,24 @@ import TextField from '@material-ui/core/TextField';
 import * as client from 'machete-api-redux-query-es6-client';
 import { EmployerVM, EmployerVMFromJSON } from 'machete-api-redux-query-es6-client';
 import React, { FunctionComponent, useState, ChangeEvent } from 'react';
-import { useMutation } from 'redux-query-react';
+import { useMutation, useRequest } from 'redux-query-react';
 import { useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { getEmployersErrors } from '../../store/Selectors';
 import { mutateEmployer } from '../../store/Mutations';
 import { useForm } from 'react-hook-form';
 
-export const EmployerForm: FunctionComponent = () => {
+interface Props {
+  employerId?: number
+}
+
+export const EmployerForm: FunctionComponent<Props> = ({employerId}) => {
   const [open, setOpen] = useState(false);
   const [employerVM, setEmployerVM] = useState<EmployerVM>();
   const { enqueueSnackbar } = useSnackbar();
   const { responseBody } = useSelector(getEmployersErrors) || [];
+
+  const [{ isPending }] = useRequest(client.apiConfigsIdGet({ id: employerId}));
 
   const [{ status }, postToEmployer] = useMutation((newEmployer: EmployerVM) => 
     client.apiEmployersIdPut<{ employers: EmployerVM}>({

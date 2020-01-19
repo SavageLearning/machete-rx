@@ -28,6 +28,13 @@ export const EmployersTable: FunctionComponent = () => {
             {title: 'Phone', field: 'phone'},
             {title: 'Zipcode', field: 'zipcode'}
           ]}
+          actions={[
+            {
+              icon: 'edit',
+              tooltip: 'Edit employer',
+              onClick: (event, rowData) => alert("You saved " + rowData.name)
+            }
+          ]}
       />
       <EmployerForm/>
     </div>
